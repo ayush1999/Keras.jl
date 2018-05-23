@@ -15,7 +15,7 @@ Load the structure of the model from the .JSON
 file.
 """
 function load_structure(file="structure.json")
-    res = JSON.parse(String(open(file, "r")))
+    res = JSON.parse(String(read(open(file, "r"))))
     return res["config"]
 end
 
