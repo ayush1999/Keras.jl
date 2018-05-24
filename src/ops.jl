@@ -5,18 +5,20 @@ ops[:Input] = function(a)
 end
 
 ops[:Conv] = function(a)
-    name = a["name"]
-    weight = weights()[name][name]["kernel:0"]
-    bias = weights()[name][name]["bias:0"]
-    return vcall(:Conv, weight, bias, Symbol(a["activation"]),  a["strides"])
+    activation = a.fields["activation"]
+    kernel_weight = permutedims(weights[g[1].fields["name"]][g[1].fields["name"]]["kernel:0"], (4,3,2,1))
+    kernel_bias = weights[g[1].fields["name"]][g[1].fields["name"]]["bias:0"]
+    strides = (g[1].fields["strides"]...)
+    pads = (0,0)
+    return vcall(:Conv, activation, kernel_weight, kernel_bias, strides, pads)
 end
 
 ops[:Dropout] = function(a)
-    vcall(:Dropout, a["rate"])
+    return vcall(:Dropout, a.fields["rate"])
 end
 
 ops[:MaxPool] = function(a)
-    vcall(:MaxPool, a["rate"])
+    return vcall(x->maxpool(x, (a.fields["pool_size"]...), pad=(0,0), stride=(a.fields["stride"])...)
 end
 
 ops[:Dense] = function(a)
