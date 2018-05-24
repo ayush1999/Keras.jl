@@ -18,11 +18,17 @@ ops[:Dropout] = function(a)
 end
 
 ops[:MaxPool] = function(a)
-    return vcall(x->maxpool(x, (a.fields["pool_size"]...), pads=(0,0), strides=(a.fields["strides"]...)))
+    return x->maxpool(x, (a.fields["pool_size"]...), pad=(0,0), stride=(a.fields["strides"]...))
+    #return vcall(x->maxpool(x, (a.fields["pool_size"]...), pads=(0,0), strides=(a.fields["strides"]...)))
+end
+
+ops[:Flatten] = function(a)
+    return :vec
 end
 
 ops[:Dense] = function(a)
-    weight = weights()[a.name][a.name]["kernel:0"]
-    bias = weights()[a.name][a.name]["bias:0"]
-    return vcall(:Dense, weight, bias)
+    name = a.fields["name"]
+    weight_kernel = weight[name][name]["kernel:0"]
+    bias = weight[name][name]["bias:0"]
+    return Dense(weight_kernel, bias)
 end
