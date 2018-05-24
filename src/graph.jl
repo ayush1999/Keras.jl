@@ -1,6 +1,6 @@
 using DataFlow:Call, syntax, vertex, constant
 include("ops.jl")
-vcall(a...) = vertex(Call, constant.(a)...)
+vcall(a...) = vertex(Call(), constant.(a)...)
 
 #function creat_graph(a::Array{Any, 1})
 struct graph
