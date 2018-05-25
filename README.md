@@ -14,7 +14,7 @@ Current Working:
 ```
 >>> using Keras
 >>> model, weight = Keras.load("model_structure.json", "model_weights.h5")      #Returns the model and the weights
->>> Keras.predict(model, rand(Float32, 28,28,1,1,))                         #Returns the model's prediction. To Do: Implement directly                                                                            
+>>> model(rand(Float32, 28,28,1,1,))                         #Returns the model's prediction.                                                                          
 10-element Array{Float32,1}:
   0.582318
  -0.712256
