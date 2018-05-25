@@ -61,3 +61,7 @@ end
 function predict(go, x)
     return chainify(go, x) |> syntax |> eval
 end
+
+function (m::Array{Any, 1})(x)
+    return chainify(m, x) |> syntax |> eval
+end
