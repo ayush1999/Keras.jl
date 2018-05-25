@@ -30,5 +30,9 @@ ops[:Dense] = function(a)
     name = a.fields["name"]
     weight_kernel = weight[name][name]["kernel:0"]
     bias = weight[name][name]["bias:0"]
-    return Dense(weight_kernel, bias)
+    #if !haskey(a.fields, "activation")
+       return Dense(weight_kernel, bias)
+    #else
+    #    return Dense(weight_kernel, bias), a.fields["activation"]
+    #end
 end
