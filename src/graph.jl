@@ -44,7 +44,11 @@ end
 function chainify(a::Array{Any, 1}, ip)
     res = ip
     for ele in a
-        temp = vcall(:Chain, ele)
+        if typeof(ele) <: Tuple
+            temp = vcall(:Chain, ele[1], ele[2])
+        else
+            temp = vcall(:Chain, ele)
+        end
         res = vcall(temp, res)
     end
     return res
