@@ -28,3 +28,24 @@ function create_graph(a::Array{Any, 1})
     end
     return b
 end
+
+vcall_chain(a...) = vertex(Call(), :Chain, constant.(a)...)
+
+#Create an array of ops from Keras.load_layers
+function get_ops(a::Array{Any, 1})
+    res = Array{Any, 1}()
+    for ele in a
+        push!(res, ops[ele.layer_type](ele))
+    end
+    return res
+end
+
+#Chainify get_ops
+function chainify(a::Array{Any, 1}, ip)
+    res = ip
+    for ele in a
+        temp = vcall(:Chain, ele)
+        res = vcall(temp, res)
+    end
+    return res
+end
