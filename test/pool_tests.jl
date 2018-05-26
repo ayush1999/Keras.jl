@@ -28,3 +28,8 @@ temp = Keras.new_type(:MaxPool, Dict{Any,Any}(Pair{Any,Any}("name", "max_pooling
 #println(size(Conv(relu, w, b, (3,3), (0,0))(a)))
 #@test Conv(relu, w, b, (3,3), (0,0))(a) == 
 #            vcall(Keras.ops[:Conv](temp), a) |> syntax |> eval
+
+# Flatten test
+
+@test vcall(Keras.ops[:Flatten](rand(5,5)), a) |> syntax |> eval == 
+            vec(a)

@@ -1,5 +1,4 @@
 ops = Dict{Symbol, Any}()
-#weight = Keras.weights()
 ops[:Input] = function(a)
     return vcall(:.+, a, 0)
 end

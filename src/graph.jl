@@ -55,17 +55,14 @@ function chainify(a::Array{Any, 1}, ip)
 end
 
 function load(structure_file, weight_file)
-    weight = weights(weight_file)
+    global weight = weights(weight_file)
+
     s = load_structure(structure_file)
     l = load_layers(s)
     go = get_ops(l)
     return go, weight
 end
-
-function predict(go, x)
-    return chainify(go, x) |> syntax |> eval
-end
-
+   
 function (m::Array{Any, 1})(x)
     return chainify(m, x) |> syntax |> eval
 end
