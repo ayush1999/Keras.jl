@@ -48,7 +48,7 @@ Extract necessary fields only from the type of layer.
 """
 function fields(a)
     if layer_type(a) == :Conv
-        return ["name", "strides", "activation", "kernel_size"]
+        return ["name", "strides", "activation", "kernel_size", "padding"]
     elseif layer_type(a) == :MaxPool
         return ["name", "strides", "padding", "pool_size"]
     elseif layer_type(a) == :Dropout

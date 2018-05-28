@@ -12,7 +12,11 @@ ops[:Conv] = function(a)
                              reverse(size(weight[a.fields["name"]][a.fields["name"]]["kernel:0"])))
     kernel_bias = weight[a.fields["name"]][a.fields["name"]]["bias:0"]
     strides = (a.fields["strides"]...)
-    pads = (0,0)
+    if a.fields["padding"] == "valid"
+        pads = (0,0)
+    elseif a.fields["padding"] == "same"
+        pads = (Int64.((a.fields["kernel_size"] .-1)./2)...)
+    end
     return vcall(:Conv, Symbol(activation), kernel_weight, kernel_bias, strides, pads)
 end
 
