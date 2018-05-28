@@ -51,6 +51,22 @@ ops[:relu] = function(a)
     return :relu
 end
 
+ops[:tanh] = function(a)
+    return :tanh
+end
+
+ops[:sigmoid] = function(a)
+    return :sigmoid
+end
+
+ops[:elu] = function(a)
+    return :elu
+end
+
+ops[:softplus] = function(a)
+    return :softplus
+end
+
 ops[:softmax] = function(a)
     return :relu
 end
