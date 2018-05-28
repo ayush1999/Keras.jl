@@ -5,7 +5,11 @@ end
 
 ops[:Conv] = function(a)
     activation = a.fields["activation"]
-    kernel_weight = permutedims(weight[a.fields["name"]][a.fields["name"]]["kernel:0"], (4,3,2,1))
+    if activation=="linear"
+        activation = "relu"
+    end
+    kernel_weight = reshape(weight[a.fields["name"]][a.fields["name"]]["kernel:0"],
+                             reverse(size(weight[a.fields["name"]][a.fields["name"]]["kernel:0"])))
     kernel_bias = weight[a.fields["name"]][a.fields["name"]]["bias:0"]
     strides = (a.fields["strides"]...)
     pads = (0,0)
@@ -32,6 +36,17 @@ ops[:Dense] = function(a)
     if !haskey(a.fields, "activation")
        return Dense(weight_kernel, bias)
     else
+        if a.fields["activation"] == "linear"
+            a.fields["activation"] = "relu"
+        end
         return Dense(weight_kernel, bias), Symbol(a.fields["activation"])
     end
+end
+
+ops[:relu] = function(a)
+    return :relu
+end
+
+ops[:softmax] = function(a)
+    return :relu
 end

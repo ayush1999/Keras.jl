@@ -62,7 +62,7 @@ function load(structure_file, weight_file)
     go = get_ops(l)
     return go, weight
 end
-   
+
 function (m::Array{Any, 1})(x)
     return chainify(m, x) |> syntax |> eval
 end

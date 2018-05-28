@@ -38,6 +38,8 @@ function layer_type(a)
         return :Flatten
     elseif (a["class_name"] == "Dense")
         return :Dense
+    elseif (a["class_name"] == "Activation")
+        return Symbol(a["config"]["activation"])
     end
 end
 
@@ -54,6 +56,10 @@ function fields(a)
     elseif layer_type(a) == :Flatten
         return ["name"]
     elseif layer_type(a) == :Dense
+        return ["name", "activation"]
+    elseif layer_type(a) == :relu
+        return ["name", "activation"]   
+    elseif layer_type(a) == :softmax
         return ["name", "activation"]   
     end
 end
