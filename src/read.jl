@@ -40,6 +40,10 @@ function layer_type(a)
         return :Dense
     elseif (a["class_name"] == "Activation")
         return Symbol(a["config"]["activation"])
+    elseif (a["class_name"] == "Reshape")
+        return :Reshape
+    elseif (a["class_name"] == "BatchNormalization")
+        return :BatchNormalization
     end
 end
 
@@ -60,7 +64,11 @@ function fields(a)
     elseif layer_type(a) == :relu
         return ["name", "activation"]   
     elseif layer_type(a) == :softmax
-        return ["name", "activation"]   
+        return ["name", "activation"]
+    elseif layer_type(a) == :Reshape
+        return ["name", "target_shape"]
+    elseif layer_type(a) == :BatchNormalization
+        return ["name", "momentum", "epsilon"]   
     end
 end
 

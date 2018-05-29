@@ -33,6 +33,12 @@ ops[:Flatten] = function(a)
     return :vec
 end
 
+ops[:BatchNormalization] = function(a)
+    epsilon = a.fields["epsilon"]
+    momentum = a.fields["momentum"]
+    return x -> BatchNorm(size(x)[3], ϵ=epsilon, momentum=momentum)(x)
+end
+
 ops[:Dense] = function(a)
     name = a.fields["name"]
     weight_kernel = weight[name][name]["kernel:0"]
@@ -45,6 +51,10 @@ ops[:Dense] = function(a)
         end
         return Dense(weight_kernel, bias), Symbol(a.fields["activation"])
     end
+end
+
+ops[:Reshape] = function(a)
+    return (x -> reshape(x, (a.fields["target_shape"]...)))
 end
 
 ops[:relu] = function(a)
