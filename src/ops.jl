@@ -58,25 +58,25 @@ ops[:Reshape] = function(a)
 end
 
 ops[:relu] = function(a)
-    return :relu
+    return relu
 end
 
 ops[:tanh] = function(a)
-    return :tanh
+    return tanh
 end
 
 ops[:sigmoid] = function(a)
-    return :sigmoid
+    return sigmoid
 end
 
 ops[:elu] = function(a)
-    return :elu
+    return elu
 end
 
 ops[:softplus] = function(a)
-    return :softplus
+    return softplus
 end
 
 ops[:softmax] = function(a)
-    return :relu
+    return relu
 end

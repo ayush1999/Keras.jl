@@ -33,3 +33,10 @@ temp = Keras.new_type(:MaxPool, Dict{Any,Any}(Pair{Any,Any}("name", "max_pooling
 
 @test vcall(Keras.ops[:Flatten](rand(5,5)), a) |> syntax |> eval == 
             vec(a)
+
+#Reshape test
+d = Dict{Any, Any}()
+d["target_shape"] = [20,5]
+a = Keras.new_type(:Reshape, d)
+t = rand(10,10)
+@test (Keras.ops[:Reshape](a))(t) == reshape(t, (20,5))
