@@ -1,4 +1,9 @@
 ops = Dict{Symbol, Any}()
+
+ops[:InputLayer] = function(a)
+    return nothing
+end
+
 ops[:Input] = function(a)
     return vcall(:.+, a, 0)
 end

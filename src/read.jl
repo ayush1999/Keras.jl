@@ -19,6 +19,14 @@ function load_structure(file="structure.json")
     return res["config"]
 end
 
+"""
+Check if model uses sequential/functional API.
+"""
+function check_modeltype(file)
+    res = JSON.parse(String(read(open(file, "r"))))
+    return res["class_name"]
+end
+
 struct new_type
     layer_type::Symbol
     fields::Any
@@ -44,6 +52,8 @@ function layer_type(a)
         return :Reshape
     elseif (a["class_name"] == "BatchNormalization")
         return :BatchNormalization
+    elseif (a["class_name"] == "InputLayer")
+        return :InputLayer
     end
 end
 
@@ -69,6 +79,8 @@ function fields(a)
         return ["name", "target_shape"]
     elseif layer_type(a) == :BatchNormalization
         return ["name", "momentum", "epsilon"]   
+    elseif layer_type(a) == :InputLayer
+        return ["name"]   
     end
 end
 

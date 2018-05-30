@@ -56,8 +56,12 @@ end
 
 function load(structure_file, weight_file)
     global weight = weights(weight_file)
-
-    s = load_structure(structure_file)
+    if check_modeltype(structure_file) == "Sequential"
+        s = load_structure(structure_file)
+    elseif check_modeltype(structure_file) == "Model"
+        s = load_structure(structure_file)["layers"]
+        filter!(x->x["class_name"]!="InputLayer", s)
+    end
     l = load_layers(s)
     go = get_ops(l)
     return go, weight
