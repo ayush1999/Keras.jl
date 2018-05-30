@@ -6,5 +6,5 @@ using DataFlow
 
     include("pool_tests.jl")
     include("activation_test.jl")
-
+    include("normalize_tests.jl")
 end
