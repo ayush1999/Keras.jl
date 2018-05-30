@@ -14,13 +14,13 @@ Loading a model in Flux is fairly simple. Clone this repository into `~/.julia/v
 
 Now that both files are present, the model can be loaded as :
 
-> using Keras
+>>> using Keras
 
-> model, weight = Keras.load("model.json", "weights.h5")
+>>> model, weight = Keras.load("model.json", "weights.h5")
 
 `model` is now the corresponding model in Flux. This can be used directly as:
 
-> model(rand(28,28,1,1))
+>>> model(rand(28,28,1,1))
 
 ## Issues
 
@@ -28,5 +28,6 @@ Since this is currently under development, feel free to open any issue you encou
 
 ### To Do:
 
-Check if yaml support is needed. (No ofiicial Yaml parser present for Julia).
+Check if yaml support is needed. (No official Yaml parser present for Julia).
+
 Verify operators. (Add more tests for new ops)
