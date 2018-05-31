@@ -15,19 +15,19 @@ temp = Keras.new_type(:MaxPool, Dict{Any,Any}(Pair{Any,Any}("name", "max_pooling
             (Keras.ops[:MaxPool](temp))(a)
 
 # Conv test
-#w = rand(3,3,1,32)
-#b = rand(32)
-#temp = Keras.new_type(:Conv, Dict{Any,Any}(Pair{Any,Any}("name", "conv2d_1"),
-#                Pair{Any,Any}("strides", Any[3, 3]),Pair{Any,Any}("kernel_size",
-#                     Any[3, 3]),Pair{Any,Any}("activation", "relu")))
-#weight = Dict{Any, Any}()
-#weight["conv2d_1"] = Dict{Any, Any}()
-#weight["conv2d_1"]["conv2d_1"] = Dict{Any, Any}()
-#weight["conv2d_1"]["conv2d_1"]["kernel:0"] = w
-#weight["conv2d_1"]["conv2d_1"]["bias:0"] = b
-#println(size(Conv(relu, w, b, (3,3), (0,0))(a)))
-#@test Conv(relu, w, b, (3,3), (0,0))(a) == 
-#            vcall(Keras.ops[:Conv](temp), a) |> syntax |> eval
+w = rand(3,3,1,32)
+b = rand(32)
+temp = Keras.new_type(:Conv, Dict{Any,Any}(Pair{Any,Any}("name", "conv2d_1"),
+                Pair{Any,Any}("strides", Any[3, 3]),Pair{Any,Any}("kernel_size",
+                     Any[3, 3]),Pair{Any,Any}("activation", "relu")))
+weight = Dict{Any, Any}()
+weight["conv2d_1"] = Dict{Any, Any}()
+weight["conv2d_1"]["conv2d_1"] = Dict{Any, Any}()
+weight["conv2d_1"]["conv2d_1"]["kernel:0"] = w
+weight["conv2d_1"]["conv2d_1"]["bias:0"] = b
+println(size(Conv(relu, w, b, (3,3), (0,0))(a)))
+@test Conv(relu, w, b, (3,3), (0,0))(a) == 
+            vcall(Keras.ops[:Conv](temp), a) |> syntax |> eval
 
 # Flatten test
 
