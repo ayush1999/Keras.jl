@@ -54,6 +54,10 @@ function layer_type(a)
         return :BatchNormalization
     elseif (a["class_name"] == "InputLayer")
         return :InputLayer
+    elseif (a["class_name"] == "ZeroPadding2D")
+        return :ZeroPadding2D
+    elseif (a["class_name"] == "Add")
+        return :Add
     end
 end
 
@@ -80,6 +84,10 @@ function fields(a)
     elseif layer_type(a) == :BatchNormalization
         return ["name", "momentum", "epsilon"]   
     elseif layer_type(a) == :InputLayer
+        return ["name"]   
+    elseif layer_type(a) == :ZeroPadding2D
+        return ["name", "padding"]   
+    elseif layer_type(a) == :Add
         return ["name"]   
     end
 end
