@@ -63,8 +63,8 @@ ops[:ZeroPadding2D] = function(a)
     return x -> meanpool(x, (1,1), pad=pads, stride=(1,1))
 end
 
-ops[:Add] = function(a)
-    
+#ops[:Add] = function(a)
+
 
 ops[:Reshape] = function(a)
     return (x -> reshape(x, (a.fields["target_shape"]...)))
