@@ -66,29 +66,29 @@ Extract necessary fields only from the type of layer.
 """
 function fields(a)
     if layer_type(a) == :Conv
-        return ["name", "strides", "activation", "kernel_size", "padding"]
+        return ["name", "strides", "activation", "kernel_size", "padding","inbound_nodes"]
     elseif layer_type(a) == :MaxPool
-        return ["name", "strides", "padding", "pool_size"]
+        return ["name", "strides", "padding", "pool_size","inbound_nodes"]
     elseif layer_type(a) == :Dropout
-        return ["name", "rate"]
+        return ["name", "rate","inbound_nodes"]
     elseif layer_type(a) == :Flatten
-        return ["name"]
+        return ["name","inbound_nodes"]
     elseif layer_type(a) == :Dense
-        return ["name", "activation"]
+        return ["name", "activation","inbound_nodes"]
     elseif layer_type(a) == :relu
-        return ["name", "activation"]   
+        return ["name", "activation","inbound_nodes"]   
     elseif layer_type(a) == :softmax
-        return ["name", "activation"]
+        return ["name", "activation","inbound_nodes"]
     elseif layer_type(a) == :Reshape
-        return ["name", "target_shape"]
+        return ["name", "target_shape","inbound_nodes"]
     elseif layer_type(a) == :BatchNormalization
-        return ["name", "momentum", "epsilon"]   
+        return ["name", "momentum", "epsilon","inbound_nodes"]   
     elseif layer_type(a) == :InputLayer
-        return ["name"]   
+        return ["name","inbound_nodes"]   
     elseif layer_type(a) == :ZeroPadding2D
-        return ["name", "padding"]   
+        return ["name", "padding","inbound_nodes"]   
     elseif layer_type(a) == :Add
-        return ["name"]   
+        return ["name","inbound_nodes"]   
     end
 end
 

@@ -70,3 +70,11 @@ end
 function (m::Array{Any, 1})(x)
     return chainify(m, x) |> syntax |> eval
 end
+
+#function graphify(m::Array{Any, 1})
+#    res = Dict{Any, Any}()
+#    for ele in m
+#        if ele["class_type"] == "InputLayer"
+#            res[ele["name"]] = :ip
+#        else
+#            res[ele["name"]] = vcall_chain(Keras.ops[Symbol(ele["class_name"])](res[ele["inbound_nodes"][1][1][]]))
