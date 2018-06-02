@@ -63,6 +63,12 @@ ops[:ZeroPadding2D] = function(a)
     return x -> meanpool(x, (1,1), pad=pads, stride=(1,1))
 end
 
+ops[:AveragePadding2D] = function(a)
+    pool_size = (a.fields["pool_size"]...)
+    strides = (a.fields["strides"]...)
+    pads = (a.fields["padding"]...)
+    return x -> meanpool(x, pool_size, pad=pads, stride=strides)
+end
 #ops[:Add] = function(a)
 
 

@@ -29,6 +29,7 @@ end
 
 struct new_type
     layer_type::Symbol
+    input_nodes::Any
     fields::Any
 end
 
@@ -58,6 +59,8 @@ function layer_type(a)
         return :ZeroPadding2D
     elseif (a["class_name"] == "Add")
         return :Add
+    elseif (a["class_name"] == "AveragePooling2D")
+        return :AveragePooling2D
     end
 end
 
@@ -66,34 +69,36 @@ Extract necessary fields only from the type of layer.
 """
 function fields(a)
     if layer_type(a) == :Conv
-        return ["name", "strides", "activation", "kernel_size", "padding","inbound_nodes"]
+        return ["name", "strides", "activation", "kernel_size", "padding"]
     elseif layer_type(a) == :MaxPool
-        return ["name", "strides", "padding", "pool_size","inbound_nodes"]
+        return ["name", "strides", "padding", "pool_size"]
     elseif layer_type(a) == :Dropout
-        return ["name", "rate","inbound_nodes"]
+        return ["name", "rate"]
     elseif layer_type(a) == :Flatten
-        return ["name","inbound_nodes"]
+        return ["name"]
     elseif layer_type(a) == :Dense
-        return ["name", "activation","inbound_nodes"]
+        return ["name", "activation"]
     elseif layer_type(a) == :relu
-        return ["name", "activation","inbound_nodes"]   
+        return ["name", "activation"]   
     elseif layer_type(a) == :softmax
-        return ["name", "activation","inbound_nodes"]
+        return ["name", "activation"]
     elseif layer_type(a) == :Reshape
-        return ["name", "target_shape","inbound_nodes"]
+        return ["name", "target_shape"]
     elseif layer_type(a) == :BatchNormalization
-        return ["name", "momentum", "epsilon","inbound_nodes"]   
+        return ["name", "momentum", "epsilon"]   
     elseif layer_type(a) == :InputLayer
-        return ["name","inbound_nodes"]   
+        return ["name"]   
     elseif layer_type(a) == :ZeroPadding2D
-        return ["name", "padding","inbound_nodes"]   
+        return ["name", "padding"]   
     elseif layer_type(a) == :Add
-        return ["name","inbound_nodes"]   
+        return ["name"]   
+    elseif layer_type(a) == :AveragePooling2D
+        return ["name","strides","padding","pool_size"]   
     end
 end
 
 """
-Extract data layerwise from the structure["config"]
+Extract data layerwise from the structure["layers"]
 array.
 """
 function load_layers(a::Array{Any, 1})
@@ -103,7 +108,11 @@ function load_layers(a::Array{Any, 1})
         for ele2=1:length(fields(ele))
             d[fields(ele)[ele2]] = ele["config"][fields(ele)[ele2]]
         end
-    push!(res, new_type(layer_type(ele), d))
+        if !haskey(ele, "inbound_nodes")
+            ele["inbound_nodes"] = nothing
+        end
+        inputs = ele["inbound_nodes"]
+    push!(res, new_type(layer_type(ele), inputs, d))
     end
     return res
 end

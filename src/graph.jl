@@ -55,26 +55,38 @@ function chainify(a::Array{Any, 1}, ip)
 end
 
 function load(structure_file, weight_file)
-    global weight = weights(weight_file)
     if check_modeltype(structure_file) == "Sequential"
-        s = load_structure(structure_file)
+        global weight = weights(weight_file)
+        if check_modeltype(structure_file) == "Sequential"
+            s = load_structure(structure_file)
+        elseif check_modeltype(structure_file) == "Model"
+            s = load_structure(structure_file)["layers"]
+            filter!(x->x["class_name"]!="InputLayer", s)
+        end
+        l = load_layers(s)
+        go = get_ops(l)
+        return go, weight
     elseif check_modeltype(structure_file) == "Model"
-        s = load_structure(structure_file)["layers"]
-        filter!(x->x["class_name"]!="InputLayer", s)
+        return load_nonsequential_model(structure_file, weight_file)
     end
-    l = load_layers(s)
-    go = get_ops(l)
-    return go, weight
 end
 
 function (m::Array{Any, 1})(x)
     return chainify(m, x) |> syntax |> eval
 end
 
+#"""
+#Takes load_layer as input
+#"""
 #function graphify(m::Array{Any, 1})
+#    global weight = weights("resnet.h5")
 #    res = Dict{Any, Any}()
 #    for ele in m
-#        if ele["class_type"] == "InputLayer"
-#            res[ele["name"]] = :ip
+#        if ele.layer_type == :InputLayer
+#            res[ele.fields["name"]] = :ip
 #        else
-#            res[ele["name"]] = vcall_chain(Keras.ops[Symbol(ele["class_name"])](res[ele["inbound_nodes"][1][1][]]))
+#            res[ele.fields["name"]] = vcall(ops[ele.layer_type](ele), res[ele.input_nodes[1][1][1]])
+#        end
+#    end
+#    return res
+#end
