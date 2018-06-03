@@ -61,6 +61,10 @@ function layer_type(a)
         return :Add
     elseif (a["class_name"] == "AveragePooling2D")
         return :AveragePooling2D
+    elseif (a["class_name"] == "Concatenate")
+        return :Concatenate
+    elseif (a["class_name"] == "GlobalAveragePooling2D")
+        return :GlobalAveragePooling2D
     end
 end
 
@@ -94,6 +98,10 @@ function fields(a)
         return ["name"]   
     elseif layer_type(a) == :AveragePooling2D
         return ["name","strides","padding","pool_size"]   
+    elseif layer_type(a) == :Concatenate
+        return ["name","axis"]   
+    elseif layer_type(a) == :GlobalAveragePooling2D
+        return ["name"]   
     end
 end
 

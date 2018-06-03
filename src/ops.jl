@@ -19,6 +19,9 @@ ops[:Conv] = function(a)
     end
     kernel_weight = reshape(weight[a.fields["name"]][a.fields["name"]]["kernel:0"],
                              reverse(size(weight[a.fields["name"]][a.fields["name"]]["kernel:0"])))
+    if !haskey(weight[a.fields["name"]][a.fields["name"]], "bias:0")
+        weight[a.fields["name"]][a.fields["name"]]["bias:0"] = [0]
+    end
     kernel_bias = weight[a.fields["name"]][a.fields["name"]]["bias:0"]
     strides = (a.fields["strides"]...)
     if a.fields["padding"] == "valid"
@@ -27,6 +30,10 @@ ops[:Conv] = function(a)
         pads = (Int64.((a.fields["kernel_size"] .-1)./2)...)
     end
     return vcall(:Conv, Symbol(activation), kernel_weight, kernel_bias, strides, pads)
+end
+
+ops[:Concatenate] = function(a)
+    return :cat
 end
 
 ops[:Dropout] = function(a)
@@ -75,6 +82,10 @@ ops[:AveragePooling2D] = function(a)
     strides = (a.fields["strides"]...)
     pads = (a.fields["padding"]...)
     return x -> meanpool(x, pool_size, pad=pads, stride=strides)
+end
+
+ops[:GlobalAveragePooling2D] = function(a)
+    return x-> mean(x, (1,2))
 end
 
 ops[:Add] = function(a)

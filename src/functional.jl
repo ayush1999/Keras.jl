@@ -2,6 +2,7 @@
 
 # load_layers(load_structure(model)["layers"])
 # Create a graph from the above array.
+vcall_cat(a...) = vcall(:cat, 3, )
 
 function graphify(a::Array{Any, 1}, structure_file, weight_file, ip)
     global weight = weights(weight_file)
@@ -13,6 +14,19 @@ function graphify(a::Array{Any, 1}, structure_file, weight_file, ip)
         elseif ele.layer_type == :Add
             inputs = ele.input_nodes[1]
             res[ele.fields["name"]] = vcall(ops[:Add](ele), res[inputs[1][1]], res[inputs[2][1]])
+        elseif ele.layer_type == :Concatenate
+            inputs = ele.input_nodes[1]
+            ips = Array{Any, 1}()
+            for ip in inputs
+                push!(ips, ip[1])
+            end
+            if length(ips) == 4
+                res[ele.fields["name"]] = vcall(:cat, 3, res[ips[1]],res[ips[2]],res[ips[3]],res[ips[4]])
+            elseif length(ips) == 3
+                res[ele.fields["name"]] = vcall(:cat, 3, res[ips[1]],res[ips[2]],res[ips[3]])
+            elseif length(ips) == 2
+                res[ele.fields["name"]] = vcall(:cat, 3, res[ips[1]],res[ips[2]])
+            end
         else
             inputs = ele.input_nodes[1][1][1]
             res[ele.fields["name"]] = vcall(ops[ele.layer_type](ele), res[inputs])
