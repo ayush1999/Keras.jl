@@ -10,8 +10,12 @@ end
 
 ops[:Conv] = function(a)
     activation = a.fields["activation"]
-    if activation=="linear"
+    if activation =="linear"
         activation = "relu"
+    end
+    if !haskey(weight[a.fields["name"]] ,a.fields["name"])
+        dummy_name = a.fields["name"]*"_1"
+        weight[a.fields["name"]][a.fields["name"]] = weight[a.fields["name"]][dummy_name]
     end
     kernel_weight = reshape(weight[a.fields["name"]][a.fields["name"]]["kernel:0"],
                              reverse(size(weight[a.fields["name"]][a.fields["name"]]["kernel:0"])))
@@ -63,14 +67,16 @@ ops[:ZeroPadding2D] = function(a)
     return x -> meanpool(x, (1,1), pad=pads, stride=(1,1))
 end
 
-ops[:AveragePadding2D] = function(a)
+ops[:AveragePooling2D] = function(a)
     pool_size = (a.fields["pool_size"]...)
     strides = (a.fields["strides"]...)
     pads = (a.fields["padding"]...)
     return x -> meanpool(x, pool_size, pad=pads, stride=strides)
 end
-#ops[:Add] = function(a)
 
+ops[:Add] = function(a)
+    return :+
+end
 
 ops[:Reshape] = function(a)
     return (x -> reshape(x, (a.fields["target_shape"]...)))
