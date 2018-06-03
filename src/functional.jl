@@ -8,7 +8,7 @@ function graphify(a::Array{Any, 1})
     res = Dict{Any, Any}()
     for ele in a
         if ele.layer_type == :InputLayer
-            res[ele.fields["name"]] = :ip
+            res[ele.fields["name"]] = vcall(:identity, rand(Float32, 224,224,3,1))
             #println(ele.fields["name"], "-->",res[ele.fields["name"]])
         elseif ele.layer_type == :Add
             inputs = ele.input_nodes[1]
@@ -30,7 +30,8 @@ end
 function get_op(structure_file, ll)
     dic = graphify(ll)
     op = get_outputlayer(structure_file)
-    return dic[op] |> syntax
+    #op2 = vcall(:Chain, dic[op])
+    return dic[op] |> syntax |> eval
 end
 
 #function load_nonsequential_model(structure_file, weight_file)
