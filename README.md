@@ -12,7 +12,19 @@ Loading a model in Flux is fairly simple. Clone this repository into `~/.julia/v
 
 (The files can have any other name (as long as they are in the correct format). I'm using model.json and weights.h5 as an example here)
 
-Now that both files are present, the model can be loaded as :
+Keras models can broadly be divided into two categories:
+
+1. The models using the `sequential` API.
+2. The models using the `functional` API.
+
+Due to subtle differences in their structure and functioning, you need to follow different steps to run these models in Flux. You can check the type of the model by:
+```
+>>> using Keras
+
+>>> Keras.check_modeltype("model.json")
+```
+
+## Running Sequential Models 
 
 ```
 >>> using Keras
@@ -25,6 +37,25 @@ Now that both files are present, the model can be loaded as :
 ```
 >>> model(rand(28,28,1,1))
 ```
+
+Another straight-forward way of running such models is:
+```
+>>> using Keras
+
+>>> Keras.load("model.json", "weights.h5", ip)
+```
+Where `ip` is our input. This directly returns the models output.
+
+## Running Functional Models.
+
+Functional models can be tricky as they may consist of a number of sub-graphs within themselves. Running such models is similar to the second way of running Sequential models mentioned above.
+
+```
+>>> using Keras
+
+>>> Keras.load("model.json", "weight.h5", ip)
+```
+Where `ip` is the input to our model. This directly returns the output. (Note: Currently there is no other way of running functional API models).
 
 ## Issues
 

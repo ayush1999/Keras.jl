@@ -7,13 +7,21 @@ Loads the weights from the weights.h5 file.
 """
 function weights(file="weights.h5")
     f = h5open(file, "r")
-    for ele in keys(read(f))
-        if contains(ele ,"/")
-            temp = split(ele, "/")
-            read(f)[temp[1]][temp[1]] = read(f)[temp[1]][temp[2]][temp[1]][temp[2]]
+#    for ele in keys(read(f))
+#        if contains(ele ,"/")
+#            temp = split(ele, "/")
+#            read(f)[temp[1]][temp[1]] = read(f)[temp[1]][temp[2]][temp[1]][temp[2]]
+#        end
+#    end
+    weight = read(f)
+    for ele in keys(weight)
+        if !isempty(weight[ele])
+            for ele2 in keys(weight[ele][ele*"_1"])
+                weight[ele][ele*"_1"][ele2] = convert(Array{Float64, N} where N, weight[ele][ele*"_1"][ele2])
+            end
         end
     end
-    return read(f)
+    return weight
 end
 
 """

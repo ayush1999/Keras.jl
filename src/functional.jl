@@ -27,6 +27,11 @@ function graphify(a::Array{Any, 1}, structure_file, weight_file, ip)
             elseif length(ips) == 2
                 res[ele.fields["name"]] = vcall(:cat, 3, res[ips[1]],res[ips[2]])
             end
+        elseif ele.layer_type == :Dense
+            op_dense = ops[:Dense](ele)[1]
+            op_activation = ops[:Dense](ele)[2]
+            inputs = ele.input_nodes[1][1][1]
+            res[ele.fields["name"]] = vcall(op_activation, vcall(op_dense, res[inputs]))
         else
             inputs = ele.input_nodes[1][1][1]
             res[ele.fields["name"]] = vcall(ops[ele.layer_type](ele), res[inputs])
@@ -67,6 +72,8 @@ function get_op(structure_file,weight_file,  ll)
     return dic[op] |> syntax |> eval
 end
 
-#function load_nonsequential_model(structure_file, weight_file)
-#    global weight = weights(weight_file)
-#    return 
+function load_nonsequential_model(structure_file, weight_file)
+    global weight = weights(weight_file)
+    ll = load_layers(load_structure(structure_file)["layers"])
+    return graphify(ll, structure_file, weight_file)
+end

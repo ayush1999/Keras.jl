@@ -54,7 +54,7 @@ function chainify(a::Array{Any, 1}, ip)
     return res
 end
 
-function load(structure_file, weight_file)
+function load(structure_file, weight_file, ip...)
     if check_modeltype(structure_file) == "Sequential"
         global weight = weights(weight_file)
         if check_modeltype(structure_file) == "Sequential"
@@ -65,9 +65,18 @@ function load(structure_file, weight_file)
         end
         l = load_layers(s)
         go = get_ops(l)
-        return go, weight
+        if isempty(ip)
+            return go, weight
+        else
+            return go(ip[1])
+        end
     elseif check_modeltype(structure_file) == "Model"
-        return load_nonsequential_model(structure_file, weight_file)
+        if isempty(ip)
+            error("Cannot call non-Sequential models without input")
+        else
+            ll = load_layers(load_structure(structure_file)["layers"])
+        return graphify(ll, structure_file, weight_file, ip[1])
+        end
     end
 end
 
