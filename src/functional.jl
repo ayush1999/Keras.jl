@@ -21,8 +21,8 @@ function graphify(a::Array{Any, 1}, structure_file, weight_file, ip)
                 push!(ips, ip[1])
             end
             if length(ips) == 4
-                res[ele.fields["name"]] = vcall(:cat, 3, res[ips[1]],res[ips[2]],res[ips[3]],res[ips[4]])
-            elseif length(ips) == 3
+                res[ele.fields["name"]] = vcall(:cat, 3, res[ips[1]],res[ips[2]],res[ips[3]],res[ips[4]])  #ToDo: Find an efficient way
+            elseif length(ips) == 3                                                                         # for this.
                 res[ele.fields["name"]] = vcall(:cat, 3, res[ips[1]],res[ips[2]],res[ips[3]])
             elseif length(ips) == 2
                 res[ele.fields["name"]] = vcall(:cat, 3, res[ips[1]],res[ips[2]])
