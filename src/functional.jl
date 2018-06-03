@@ -23,12 +23,16 @@ function graphify(a::Array{Any, 1})
 end
 
 function get_outputlayer(structure_file)
-    res = JSON.parse(String(read(open(file, "r"))))
+    res = JSON.parse(String(read(open(structure_file, "r"))))
     return res["config"]["output_layers"][1][1]
 end
 
 function get_op(structure_file, ll)
     dic = graphify(ll)
     op = get_outputlayer(structure_file)
-    return dic[op]
-end 
+    return dic[op] |> syntax
+end
+
+#function load_nonsequential_model(structure_file, weight_file)
+#    global weight = weights(weight_file)
+#    return 

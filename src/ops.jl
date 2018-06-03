@@ -50,6 +50,9 @@ end
 
 ops[:Dense] = function(a)
     name = a.fields["name"]
+    if !haskey(weight[name], name)
+        weight[name][name] = weight[name][name*"_1"]
+    end
     weight_kernel = weight[name][name]["kernel:0"]
     bias = weight[name][name]["bias:0"]
     if !haskey(a.fields, "activation")
