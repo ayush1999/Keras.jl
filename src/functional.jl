@@ -3,12 +3,12 @@
 # load_layers(load_structure(model)["layers"])
 # Create a graph from the above array.
 
-function graphify(a::Array{Any, 1})
-    global weight = weights("resnet.h5")
+function graphify(a::Array{Any, 1}, structure_file, weight_file, ip)
+    global weight = weights(weight_file)
     res = Dict{Any, Any}()
     for ele in a
         if ele.layer_type == :InputLayer
-            res[ele.fields["name"]] = vcall(:identity, rand(Float32, 224,224,3,1))
+            res[ele.fields["name"]] = vcall(:identity, ip)
             #println(ele.fields["name"], "-->",res[ele.fields["name"]])
         elseif ele.layer_type == :Add
             inputs = ele.input_nodes[1]
@@ -19,7 +19,26 @@ function graphify(a::Array{Any, 1})
             #println(ele.fields["name"], "-->",res[ele.fields["name"]])
         end
     end
-    return res
+    return res[get_outputlayer(structure_file)] |> syntax |> eval
+end
+
+function graphify_dummy(a::Array{Any, 1}, structure_file, weight_file, ip, num)
+    global weight = weights(weight_file)
+    res = Dict{Any, Any}()
+    for ele in a[1:num]
+        if ele.layer_type == :InputLayer
+            res[ele.fields["name"]] = vcall(:identity, ip)
+            #println(ele.fields["name"], "-->",res[ele.fields["name"]])
+        elseif ele.layer_type == :Add
+            inputs = ele.input_nodes[1]
+            res[ele.fields["name"]] = vcall(ops[:Add](ele), res[inputs[1][1]], res[inputs[2][1]])
+        else
+            inputs = ele.input_nodes[1][1][1]
+            res[ele.fields["name"]] = vcall(ops[ele.layer_type](ele), res[inputs])
+            #println(ele.fields["name"], "-->",res[ele.fields["name"]])
+        end
+    end
+    return res[a[num].fields["name"]] |> syntax |> eval
 end
 
 function get_outputlayer(structure_file)
@@ -27,8 +46,8 @@ function get_outputlayer(structure_file)
     return res["config"]["output_layers"][1][1]
 end
 
-function get_op(structure_file, ll)
-    dic = graphify(ll)
+function get_op(structure_file,weight_file,  ll)
+    dic = graphify(ll,weight_file)
     op = get_outputlayer(structure_file)
     #op2 = vcall(:Chain, dic[op])
     return dic[op] |> syntax |> eval
