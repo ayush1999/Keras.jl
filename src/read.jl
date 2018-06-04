@@ -16,8 +16,14 @@ function weights(file="weights.h5")
     weight = read(f)
     for ele in keys(weight)
         if !isempty(weight[ele])
-            for ele2 in keys(weight[ele][ele*"_1"])
-                weight[ele][ele*"_1"][ele2] = convert(Array{Float64, N} where N, weight[ele][ele*"_1"][ele2])
+            if haskey(weight[ele], ele*"_1")
+                for ele2 in keys(weight[ele][ele*"_1"])
+                    weight[ele][ele*"_1"][ele2] = convert(Array{Float64, N} where N, weight[ele][ele*"_1"][ele2])
+                end
+            else
+                for ele2 in keys(weight[ele][ele])
+                    weight[ele][ele][ele2] = convert(Array{Float64, N} where N, weight[ele][ele][ele2])
+                end
             end
         end
     end

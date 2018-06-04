@@ -82,6 +82,8 @@ ops[:AveragePooling2D] = function(a)
     strides = (a.fields["strides"]...)
     if a.fields["padding"] == "valid"
         pads = (0,0)
+    elseif a.fields["padding"] == "same"
+        pads = (Int64.((a.fields["pool_size"] .-1)./2)...)
     end
     return x -> meanpool(x, pool_size, pad=pads, stride=strides)
 end

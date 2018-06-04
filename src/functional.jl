@@ -2,7 +2,7 @@
 
 # load_layers(load_structure(model)["layers"])
 # Create a graph from the above array.
-vcall_cat(a...) = vcall(:cat, 3, )
+#vcall_cat(a...) = vcall(:cat, 3, )
 
 function graphify(a::Array{Any, 1}, structure_file, weight_file, ip)
     global weight = weights(weight_file)
