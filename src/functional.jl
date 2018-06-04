@@ -32,6 +32,10 @@ function graphify(a::Array{Any, 1}, structure_file, weight_file, ip)
             op_activation = ops[:Dense](ele)[2]
             inputs = ele.input_nodes[1][1][1]
             res[ele.fields["name"]] = vcall(op_activation, vcall(op_dense, res[inputs]))
+        elseif ele.layer_type == :GlobalAveragePooling2D
+            inputs = ele.input_nodes[1][1][1]
+            res[ele.fields["name"]] = vcall(x -> reshape(x, size(x)[3], size(x)[4]), 
+                                        vcall(ops[:GlobalAveragePooling2D](ele), res[inputs]))
         else
             inputs = ele.input_nodes[1][1][1]
             res[ele.fields["name"]] = vcall(ops[ele.layer_type](ele), res[inputs])

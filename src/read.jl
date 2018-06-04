@@ -20,10 +20,12 @@ function weights(file="weights.h5")
                 for ele2 in keys(weight[ele][ele*"_1"])
                     weight[ele][ele*"_1"][ele2] = convert(Array{Float64, N} where N, weight[ele][ele*"_1"][ele2])
                 end
-            else
+            elseif haskey(weight[ele], ele)
                 for ele2 in keys(weight[ele][ele])
                     weight[ele][ele][ele2] = convert(Array{Float64, N} where N, weight[ele][ele][ele2])
                 end
+            elseif ele == "conv1"
+                weight[ele]["conv"][ele]["conv"] = convert(Array{Float64, N} where N, weight[ele]["conv"][ele]["conv"]["kernel:0"])
             end
         end
     end
