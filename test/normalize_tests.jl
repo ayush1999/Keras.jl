@@ -4,7 +4,7 @@ using Base.Test
 using DataFlow:Call, constant, vertex, syntax
 
 vcall(a...) = vertex(Call(), constant.(a)...)
-
+Keras.new_type(a, b) = Keras.new_type(a, nothing, b)
 ip = rand(32,32,3,1)
 
 #BatchNorm Test

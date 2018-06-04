@@ -3,6 +3,8 @@ using Flux
 using Base.Test
 using DataFlow:Call, constant, vertex, syntax
 
+Keras.new_type(a, b) = Keras.new_type(a, nothing, b)
+
 vcall(a...) = vertex(Call(), constant.(a)...)
 
 a = rand(10,10)
