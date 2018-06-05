@@ -22,4 +22,4 @@ for x=0:2
     netloss += loss(output, op_expected)
 end
 
-print("Average Net loss is "netloss)
+print("Average Net loss is ", netloss)
