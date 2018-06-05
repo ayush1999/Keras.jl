@@ -1,8 +1,8 @@
 # Keras.jl
 Load Keras models in Julia.
-[W.I.P]
 
-This package can be used to read and load a Keras model into Flux. Please note: Currently, I'm working only on supporting models related to Computer Vision, will add support for other networks like LSTMs, RNNs soon. 
+This is not a wrapper around [Keras](keras.io). This is built on top of [Flux](https://github.com/FluxML/Flux.jl), to directly load Keras models into Flux.
+[W.I.P]
 
 ## How?
 
@@ -15,7 +15,7 @@ Loading a model in Flux is fairly simple. Clone this repository into `~/.julia/v
 Keras models can broadly be divided into two categories:
 
 1. The models using the `sequential` API.
-2. The models using the `functional` API.
+2. The models using the `functional` API. (Also called `Model` API)
 
 Due to subtle differences in their structure and functioning, you need to follow different steps to run these models in Flux. You can check the type of the model by:
 ```
