@@ -101,7 +101,7 @@ ops[:Reshape] = function(a)
 end
 
 ops[:relu] = function(a)
-    return relu
+    return x -> broadcast(relu, x)
 end
 
 ops[:tanh] = function(a)
