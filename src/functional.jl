@@ -31,7 +31,7 @@ function graphify(a::Array{Any, 1}, structure_file, weight_file, ip)
             op_dense = ops[:Dense](ele)[1]
             op_activation = ops[:Dense](ele)[2]
             inputs = ele.input_nodes[1][1][1]
-            res[ele.fields["name"]] = vcall(op_activation, vcall(op_dense, res[inputs]))
+            res[ele.fields["name"]] = vcall(Keras.ops[op_activation](ele), vcall(op_dense, res[inputs]))
         elseif ele.layer_type == :GlobalAveragePooling2D
             inputs = ele.input_nodes[1][1][1]
             res[ele.fields["name"]] = vcall(x -> reshape(x, size(x)[3], size(x)[4]), 

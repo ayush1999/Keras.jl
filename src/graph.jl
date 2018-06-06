@@ -57,12 +57,7 @@ end
 function load(structure_file, weight_file, ip...)
     if check_modeltype(structure_file) == "Sequential"
         global weight = weights(weight_file)
-        if check_modeltype(structure_file) == "Sequential"
-            s = load_structure(structure_file)
-        elseif check_modeltype(structure_file) == "Model"
-            s = load_structure(structure_file)["layers"]
-            filter!(x->x["class_name"]!="InputLayer", s)
-        end
+        s = load_structure(structure_file)
         l = load_layers(s)
         go = get_ops(l)
         if isempty(ip)
@@ -71,11 +66,13 @@ function load(structure_file, weight_file, ip...)
             return go(ip[1])
         end
     elseif check_modeltype(structure_file) == "Model"
+        s = load_structure(structure_file)["layers"]
+        filter!(x->x["class_name"]!="InputLayer", s)
         if isempty(ip)
             error("Cannot call non-Sequential models without input")
         else
             ll = load_layers(load_structure(structure_file)["layers"])
-        return graphify(ll, structure_file, weight_file, ip[1])
+            return graphify(ll, structure_file, weight_file, ip[1])
         end
     end
 end
