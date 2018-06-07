@@ -61,6 +61,10 @@ Where `ip` is the input to our model. This directly returns the output. (Note: C
 
 Since this is currently under development, feel free to open any issue you encounter.
 
+### Current Impediments:
+
+[Lambda](https://keras.io/layers/core/#lambda) layers cannot be handled at this moment. This is because we'd need to handle the Python AST, for parsing it as JSON.
+
 ### To Do:
 
 Check if yaml support is needed. (No official Yaml parser present for Julia).
