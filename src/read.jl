@@ -25,7 +25,10 @@ function weights(file="weights.h5")
                     weight[ele][ele][ele2] = convert(Array{Float64, N} where N, weight[ele][ele][ele2])
                 end
             elseif ele == "conv1"
-                weight[ele]["conv"][ele]["conv"] = convert(Array{Float64, N} where N, weight[ele]["conv"][ele]["conv"]["kernel:0"])
+                #weight[ele]["conv"][ele]["conv"] = convert(Array{Float64, N} where N, weight[ele]["conv"][ele]["conv"]["kernel:0"])
+                weight[ele*"/conv"] = Dict{Any, Any}()
+                weight[ele*"/conv"][ele*"/conv"] = Dict{Any, Any}()
+                weight[ele*"/conv"][ele*"/conv"]["kernel:0"] = convert(Array{Float64, N} where N, weight[ele]["conv"][ele]["conv"]["kernel:0"])
             end
         end
     end
