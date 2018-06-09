@@ -14,4 +14,4 @@ Running the Keras model is pretty simple. From the terminal, run `python main.py
 
 ## Loading it in Flux.
 
-Now that we have the required files, the model can be loaded into Flux easily. From the terminal, run `julia main.jl`. This will load  the enotre model in Flux ,test it on the test files and print the accuracy achieved.
+Now that we have the required files, the model can be loaded into Flux easily. From the terminal, run `julia main.jl`. This will load  the entire model in Flux ,test it on the test files and return the accuracy achieved.
