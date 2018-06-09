@@ -64,11 +64,11 @@ ops[:Dense] = function(a)
     bias = weight[name][name]["bias:0"]
     if !haskey(a.fields, "activation")
        return Dense(weight_kernel, bias)
-    else
-        if a.fields["activation"] == "linear"
-            a.fields["activation"] = "relu"
-        end
+    elseif a.fields["activation"] == "linear" || a.fields["activation"] == "relu" 
+        a.fields["activation"] = "relu"
         return Dense(weight_kernel, bias), Symbol(a.fields["activation"])
+    elseif a.fields["activation"] == "sigmoid"
+        return Dense(weight_kernel, bias), x ->(sigmoid.(x))
     end
 end
 
@@ -122,4 +122,19 @@ end
 
 ops[:softmax] = function(a)
     return relu
+end
+
+# Embeddings
+
+ops[:Embedding] = function(a)
+    name = a.fields["name"]
+    embedding_matrix = weight[name][name]["embeddings:0"]
+    f = (x,) -> begin
+        temp = embedding_matrix[:, Int64(x[1])]
+        for i=2:length(x)
+            temp = hcat(temp, embedding_matrix[:, Int64(x[i])])
+        end
+        return temp
+    end
+    return f
 end

@@ -90,6 +90,8 @@ function layer_type(a)
         return :Concatenate
     elseif (a["class_name"] == "GlobalAveragePooling2D")
         return :GlobalAveragePooling2D
+    elseif (a["class_name"] == "Embedding")
+        return :Embedding
     end
 end
 
@@ -127,6 +129,8 @@ function fields(a)
         return ["name","axis"]   
     elseif layer_type(a) == :GlobalAveragePooling2D
         return ["name"]   
+    elseif layer_type(a) == :Embedding
+        return ["name", "output_dim", "input_dim", "input_length"]   
     end
 end
 
