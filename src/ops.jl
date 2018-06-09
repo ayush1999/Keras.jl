@@ -130,25 +130,17 @@ ops[:Embedding] = function(a)
     name = a.fields["name"]
     embedding_matrix = weight[name][name]["embeddings:0"]
     length_embedding = a.fields["output_dim"]
-    embedding_zero = []
-    for x=1:length_embedding
-        push!(embedding_zero, 0)
-    end
-    println(embedding_zero)
+    #embedding_zero = []
+    #for x=1:length_embedding
+    #    push!(embedding_zero, 0)
+    #end
     f = (x,) -> begin
-        if Int64(x[1]) == 0
-            temp = embedding_zero
-        else
-            temp = embedding_matrix[:, Int64(x[1])]
-        end
+        temp = embedding_matrix[:, Int64(x[1])+1]
         for i=2:length(x)
-            if Int64(x[i]) == 0
-                temp = hcat(temp, embedding_zero)
-            else
-                temp = hcat(temp, embedding_matrix[:, Int64(x[i])])
-            end
+            temp = hcat(temp, embedding_matrix[:, Int64(x[i])+1])
         end
-        return temp
+        return reshape(temp, reverse(size(temp)))
+        #return temp
     end
     return f
 end
