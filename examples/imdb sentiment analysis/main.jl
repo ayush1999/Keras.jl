@@ -9,7 +9,7 @@ round_output(x) = x[1]>=0.5?1:0
 using Keras
 
 println("Loading model...")
-model, w = Keras.load("model_structure.json", "model_weight.h5")
+model = Keras.load("model_structure.json", "model_weight.h5")
 println("Model loaded successfully.")
 # Test
 println("Testing model...")

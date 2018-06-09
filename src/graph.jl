@@ -61,7 +61,7 @@ function load(structure_file, weight_file, ip...)
         l = load_layers(s)
         go = get_ops(l)
         if isempty(ip)
-            return go, weight
+            return go
         else
             return go(ip[1])
         end

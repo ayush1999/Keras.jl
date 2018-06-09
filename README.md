@@ -29,7 +29,7 @@ Due to subtle differences in their structure and functioning, you need to follow
 ```
 >>> using Keras
 
->>> model, weight = Keras.load("model.json", "weights.h5")
+>>> model = Keras.load("model.json", "weights.h5")
 ```
 
 `model` is now the corresponding model in Flux. This can be used directly as:
