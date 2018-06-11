@@ -92,6 +92,8 @@ function layer_type(a)
         return :GlobalAveragePooling2D
     elseif (a["class_name"] == "Embedding")
         return :Embedding
+    elseif (a["class_name"] == "LSTM")
+        return :LSTM
     end
 end
 
@@ -131,6 +133,8 @@ function fields(a)
         return ["name"]   
     elseif layer_type(a) == :Embedding
         return ["name", "output_dim", "input_dim", "input_length"]   
+    elseif layer_type(a) == :LSTM
+        return ["name", "batch_input_shape", "activation", "units"]   
     end
 end
 

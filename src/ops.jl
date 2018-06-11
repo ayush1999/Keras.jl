@@ -69,6 +69,8 @@ ops[:Dense] = function(a)
         return Dense(weight_kernel, bias), Symbol(a.fields["activation"])
     elseif a.fields["activation"] == "sigmoid"
         return Dense(weight_kernel, bias), x ->(sigmoid.(x))
+    elseif a.fields["activation"] == "softmax"
+        return Dense(weight_kernel, bias), softmax
     end
 end
 
@@ -144,3 +146,18 @@ ops[:Embedding] = function(a)
     end
     return f
 end
+
+ops[:LSTM] = function(a)
+    name = a.fields["name"]
+    lstm_weight = weight[name][name]
+    lstm_recurrent_kernel = lstm_weight["recurrent_kernel:0"]
+    lstm_bias = lstm_weight["bias:0"]
+    lstm_kernel = lstm_weight["kernel:0"]
+    f = (x,)-> begin
+        rev = permutedims(x, (2,1))
+        ip_dense = lstm_kernel * rev
+        vec_size = size(lstm_recurrent_kernel)[2]
+        return LSTM(Flux.LSTMCell(ip_dense, lstm_recurrent_kernel, lstm_bias, zeros(vec_size), zeros(vec_size)))(x)
+    end
+    return f
+end 
