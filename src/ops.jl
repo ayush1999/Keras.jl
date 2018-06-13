@@ -153,13 +153,13 @@ ops[:LSTM] = function(a)
     lstm_recurrent_kernel = lstm_weight["recurrent_kernel:0"]
     lstm_bias = lstm_weight["bias:0"]
     lstm_kernel = lstm_weight["kernel:0"]
+    vec_size = size(lstm_recurrent_kernel)[2]
+    avg_ = 178 # Add general case here
+    limit = sqrt(3/avg_)
+    kernel_init = linspace(-1*limit, limit, 256)
+    model = LSTM(Flux.LSTMCell(lstm_kernel, lstm_recurrent_kernel, lstm_bias, zeros(vec_size), kernel_init .+ 0))
     f = (x,)-> begin
-        rev = permutedims(x, (2,1))
-        vec_size = size(lstm_recurrent_kernel)[2]
-        avg_ = 178 # Add general case here
-        limit = sqrt(3/avg_)
-        kernel_init = linspace(-1*limit, limit, 256)
-        return LSTM(Flux.LSTMCell(lstm_kernel, lstm_recurrent_kernel, lstm_bias, kernel_init .+ 0, kernel_init .+ 0))(rev)
+        return model(permutedims(x, (2,1)))
     end
     return f
 end 
