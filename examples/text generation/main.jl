@@ -15,8 +15,9 @@ r = int_to_char(a)
 
 function ip_from_text(text)
     arr = Array{Float64, 1}()
+    tex = lowercase(text)
     for ele in text[end-99:end]
-        push!(arr ,a[lowercase(string(ele))])
+        push!(arr ,a[string(ele)])
     end
     return reshape(arr, (100,1))
 end
@@ -27,13 +28,23 @@ model = Keras.load("model-structure.json", "model-weights.h5")
 # Generate text upto num_chars
 function generate_text(text, num_chars)
     for i=1:num_chars
-        text = text*r[findmax(model(ip_from_text(text)))[2]]
+        text = text*r[findmax(model(ip_from_text(text))[:, end])[2]]
+        println(text)
     end
     println(text)
 end
 #Input to the network
-text = "The rabbit-hole went straight on like a tunnel for some way, and then
+text = "went straight on like a tunnel for some way, and then
 dipped suddenly down, so suddenly that alice had not a moment to think
 about"
+println(length(text[end-99: end]))
+
 generate_text(text, 10)
 
+println(r[40])
+println(r[30])
+println(findmax(model(rand(100,1)))[2])
+println(r[30])
+println(findmax(model(rand(100,1)))[2])
+
+generate_text(text, 100)

@@ -24,6 +24,7 @@ n_chars = len(raw_text)
 n_vocab = len(chars)
 print("Total Characters: ", n_chars)
 print("Total Vocab: ", n_vocab)
+print(chars)
 # prepare the dataset of input to output pairs encoded as integers
 seq_length = 100
 dataX = []
@@ -55,7 +56,7 @@ model.compile(loss='categorical_crossentropy', optimizer='adam')
 #callbacks_list = [checkpoint]
 # fit the model
 print(model.summary())
-model.fit(X, y, epochs=8, batch_size=128)
+model.fit(X, y, epochs=25, batch_size=128)
 
 with open("model-structure.json","w") as file:
 	file.write(model.to_json())
