@@ -43,9 +43,11 @@ X = X / float(n_vocab)
 # one hot encode the output variable
 y = np_utils.to_categorical(dataY)
 print(X.shape)
+print(X.shape[1], X.shape[2])
 # define the LSTM model
 model = Sequential()
-model.add(LSTM(256, input_shape=(X.shape[1], X.shape[2])))
+model.add(LSTM(256, bias_initializer='zeros', recurrent_initializer='glorot_uniform', 
+			kernel_initializer='glorot_uniform', input_shape=(X.shape[1], X.shape[2])))
 model.add(Dropout(0.2))
 model.add(Dense(y.shape[1], activation='softmax'))
 model.compile(loss='categorical_crossentropy', optimizer='adam')
@@ -56,7 +58,7 @@ model.compile(loss='categorical_crossentropy', optimizer='adam')
 #callbacks_list = [checkpoint]
 # fit the model
 print(model.summary())
-model.fit(X, y, epochs=25, batch_size=128)
+model.fit(X, y, epochs=2, batch_size=128)
 
 with open("model-structure.json","w") as file:
 	file.write(model.to_json())

@@ -19,7 +19,7 @@ function ip_from_text(text)
     for ele in text[end-99:end]
         push!(arr ,a[string(ele)])
     end
-    return reshape(arr, (100,1))
+    return arr./60
 end
 
 
@@ -29,22 +29,12 @@ model = Keras.load("model-structure.json", "model-weights.h5")
 function generate_text(text, num_chars)
     for i=1:num_chars
         text = text*r[findmax(model(ip_from_text(text))[:, end])[2]]
-        println(text)
     end
-    println(text)
+    return text
 end
 #Input to the network
 text = "went straight on like a tunnel for some way, and then
-dipped suddenly down, so suddenly that alice had not a moment to think
-about"
+dipped suddenly down, so suddenly that alice had not a mome"
 println(length(text[end-99: end]))
 
-generate_text(text, 10)
-
-println(r[40])
-println(r[30])
-println(findmax(model(rand(100,1)))[2])
-println(r[30])
-println(findmax(model(rand(100,1)))[2])
-
-generate_text(text, 100)
+println(generate_text(text, 100))
