@@ -10,8 +10,9 @@ other relevant files.
 
 ## Producing text.
 
-One the model has been trained and saved, it can be easily imported into Flux, and run to produce 
-artificial text using `julia main.jl` from the terminal.
+Once the model has been trained and saved, it can be easily imported into Flux. Run 
+`julia main.jl` from the terminal to run the model and produce 
+artificial text.
 
 ```
 $ julia main.jl
