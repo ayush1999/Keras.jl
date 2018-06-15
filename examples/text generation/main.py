@@ -59,7 +59,7 @@ model.compile(loss='categorical_crossentropy', optimizer='adam')
 #callbacks_list = [checkpoint]
 # fit the model
 print(model.summary())
-model.fit(X, y, epochs=20, batch_size=128)
+model.fit(X, y, epochs=15, batch_size=128)
 
 with open("model-structure.json","w") as file:
 	file.write(model.to_json())

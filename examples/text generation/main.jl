@@ -27,14 +27,15 @@ model = Keras.load("model-structure.json", "model-weights.h5")
 
 # Generate text upto num_chars
 function generate_text(text, num_chars)
+    println("Original text: ", text, "\n")
     for i=1:num_chars
         text = text*r[findmax(model(ip_from_text(text))[:, end])[2]]
     end
-    return text
+    println("Produced text: ", text)
 end
 #Input to the network
 text = "went straight on like a tunnel for some way, and then
 dipped suddenly down, so suddenly that alice had not a mome"
-println(length(text[end-99: end]))
+#println(length(text[end-99: end]))
 
-println(generate_text(text, 180))
+generate_text(text, 120)
