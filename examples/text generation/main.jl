@@ -38,4 +38,4 @@ text = "went straight on like a tunnel for some way, and then
 dipped suddenly down, so suddenly that alice had not a mome"
 #println(length(text[end-99: end]))
 
-generate_text(text, 120)
+generate_text(text, 100)
