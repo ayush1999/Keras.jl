@@ -54,6 +54,15 @@ function chainify(a::Array{Any, 1}, ip)
     return res
 end
 
+#function write_chainify(ll)
+#    text="Chain("
+#    for ele in ll
+#        text= text*"$(ele.fields["name"]) ,"
+#    end
+#    text = text*")"
+#    write!("(x,)-> begin \n $text \n end")
+#end
+
 function load(structure_file, weight_file, ip...)
     if check_modeltype(structure_file) == "Sequential"
         global weight = weights(weight_file)
@@ -64,7 +73,7 @@ function load(structure_file, weight_file, ip...)
             return go
         else
             return go(ip[1])
-        end
+        end  
     elseif check_modeltype(structure_file) == "Model"
         s = load_structure(structure_file)["layers"]
         filter!(x->x["class_name"]!="InputLayer", s)

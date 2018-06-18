@@ -29,4 +29,4 @@ $
 ```
 
 Note: By default, the Keras model is trained upto 15 epochs. To get better results, it is
-advicable to train the model for atleast 25 epochs. (Just change the epochs in Line 62 in `main.py`)
+advisable to train the model for atleast 25 epochs. (Just change the epochs in Line 62 in `main.py`)

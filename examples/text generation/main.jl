@@ -15,7 +15,7 @@ r = int_to_char(a)
 
 function ip_from_text(text)
     arr = Array{Float64, 1}()
-    tex = lowercase(text)
+    text = lowercase(text)
     for ele in text[end-99:end]
         push!(arr ,a[string(ele)])
     end
@@ -38,4 +38,4 @@ text = "went straight on like a tunnel for some way, and then
 dipped suddenly down, so suddenly that alice had not a mome"
 #println(length(text[end-99: end]))
 
-generate_text(text, 100)
+generate_text(text, 600)
