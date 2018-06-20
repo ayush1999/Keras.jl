@@ -73,7 +73,7 @@ function layer_type(a)
     elseif (a["class_name"] == "Dense")
         return :Dense
     elseif (a["class_name"] == "Activation")
-        return Symbol(a["config"]["activation"])
+        return :Activation
     elseif (a["class_name"] == "Reshape")
         return :Reshape
     elseif (a["class_name"] == "BatchNormalization")
@@ -134,7 +134,9 @@ function fields(a)
     elseif layer_type(a) == :Embedding
         return ["name", "output_dim", "input_dim", "input_length"]   
     elseif layer_type(a) == :LSTM
-        return ["name", "batch_input_shape", "activation", "units", "return_sequences"]   
+        return ["name", "activation", "units", "return_sequences"]   
+    elseif layer_type(a) == :Activation
+        return ["name", "activation"]   
     end
 end
 

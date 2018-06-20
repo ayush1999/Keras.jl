@@ -1,4 +1,5 @@
 ops = Dict{Symbol, Any}()
+has_lstm = false
 
 ops[:InputLayer] = function(a)
     return nothing
@@ -30,6 +31,12 @@ ops[:Conv] = function(a)
         pads = (Int64.((a.fields["kernel_size"] .-1)./2)...)
     end
     return vcall(:Conv, Symbol(activation), kernel_weight, kernel_bias, strides, pads)
+end
+
+ops[:Activation] = function(a)
+    if a.fields["activation"] == "linear"
+        return relu
+    end
 end
 
 ops[:Concatenate] = function(a)
@@ -157,10 +164,12 @@ ops[:LSTM] = function(a)
     avg_ = 178 # Add general case here
     limit = sqrt(3/avg_)
     kernel_init = linspace(-1*limit, limit, 256)
+    
     if a.fields["return_sequences"] == false
         f = (x,)-> begin
             res= 0
             model = LSTM(Flux.LSTMCell(lstm_kernel, lstm_recurrent_kernel, lstm_bias, zeros(vec_size), zeros(vec_size)))
+            x = permutedims(x, reverse(range(1, ndims(x))))
             for i=1:length(x)
                 res = model(x[i])
             end
