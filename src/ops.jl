@@ -157,13 +157,26 @@ ops[:LSTM] = function(a)
     avg_ = 178 # Add general case here
     limit = sqrt(3/avg_)
     kernel_init = linspace(-1*limit, limit, 256)
-    f = (x,)-> begin
-        res= 0
-        model = LSTM(Flux.LSTMCell(lstm_kernel, lstm_recurrent_kernel, lstm_bias, zeros(vec_size), zeros(vec_size)))
-        for i=1:length(x)
-            res = model(x[i])
+    if a.fields["return_sequences"] == false
+        f = (x,)-> begin
+            res= 0
+            model = LSTM(Flux.LSTMCell(lstm_kernel, lstm_recurrent_kernel, lstm_bias, zeros(vec_size), zeros(vec_size)))
+            for i=1:length(x)
+                res = model(x[i])
+            end
+            return res
         end
-        return res
+    else
+        f = (x,)-> begin
+            res= 0
+            model = LSTM(Flux.LSTMCell(lstm_kernel, lstm_recurrent_kernel, lstm_bias, zeros(vec_size), zeros(vec_size)))
+            ans = model(x[1])
+            for i=2:length(x)
+                res = model(x[i])
+                ans = hcat(ans, res)
+            end
+            return permutedims(ans, (2,1))
+        end
     end
     return f
 end 

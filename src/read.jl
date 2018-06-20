@@ -134,7 +134,7 @@ function fields(a)
     elseif layer_type(a) == :Embedding
         return ["name", "output_dim", "input_dim", "input_length"]   
     elseif layer_type(a) == :LSTM
-        return ["name", "batch_input_shape", "activation", "units"]   
+        return ["name", "batch_input_shape", "activation", "units", "return_sequences"]   
     end
 end
 
