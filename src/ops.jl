@@ -53,7 +53,12 @@ ops[:MaxPool] = function(a)
 end
 
 ops[:Flatten] = function(a)
-    return :vec
+    f = (x,) -> begin
+        l = prod(size(x))
+        x = permutedims(x, reverse(range(1, ndims(x))))
+        return reshape(x, (l,1))
+    end
+    return f
 end
 
 ops[:BatchNormalization] = function(a)

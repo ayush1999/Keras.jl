@@ -2,16 +2,15 @@ import pandas as pd
 import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Dropout, LSTM, Flatten
+import time
+
+## Loading and preprocessing.
+
 prices_dataset = pd.read_csv("prices.csv")
 yahoo = prices_dataset[prices_dataset["symbol"] == "YHOO"]
-
 yahoo_prices = yahoo.close.values.astype('float32')
-yahoo_prices = yahoo_prices.reshape(1762, 1)
+yahoo_stock_prices = yahoo_prices.reshape(1762, 1) / max(yahoo_prices)
 
-from sklearn.preprocessing import MinMaxScaler
-
-scaler = MinMaxScaler(feature_range=(0, 1))
-yahoo_stock_prices = scaler.fit_transform(yahoo_prices)
 
 train_size = int(len(yahoo_stock_prices) * 0.80)
 test_size = len(yahoo_stock_prices) - train_size
@@ -31,21 +30,20 @@ look_back = 20
 trainX, trainY = create_dataset(train, look_back)
 testX, testY = create_dataset(test, look_back)
 
-trainX = np.reshape(trainX, (trainX.shape[0], 1, trainX.shape[1]))
-testX = np.reshape(testX, (testX.shape[0], 1, testX.shape[1]))
+# 20 timesteps
+trainX = np.reshape(trainX, (trainX.shape[0], trainX.shape[1], 1))
+testX = np.reshape(testX, (testX.shape[0], testX.shape[1], 1))
+print(trainX.shape)
+print(testX.shape)
 np.save("testX.npy", testX)
 np.save("testY.npy", testY)
-
-import time
-
 model = Sequential()
-model.add(LSTM(50, input_shape=(1,look_back), recurrent_activation="sigmoid",
+model.add(LSTM(50, input_shape=(look_back, 1), recurrent_activation="sigmoid",
                recurrent_initializer='glorot_uniform',
                kernel_initializer='glorot_uniform', return_sequences=True))
-model.add(Dropout(0.2))
 model.add(Flatten())
-model.add(Dense(100, activation="sigmoid"))
-model.add(Dense(1, activation="sigmoid"))
+model.add(Dense(100, activation="relu"))
+model.add(Dense(1, activation="relu"))
 
 start = time.time()
 model.compile(loss='mse', optimizer='adam')
@@ -54,7 +52,7 @@ model.fit(
     trainX,
     trainY,
     batch_size=128,
-    nb_epoch=10,
+    epochs=250,
     validation_split=0.05)
 
 model.save_weights("weights.h5")
