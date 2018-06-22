@@ -175,8 +175,8 @@ ops[:LSTM] = function(a)
             res= 0
             model = LSTM(Flux.LSTMCell(lstm_kernel, lstm_recurrent_kernel, lstm_bias, zeros(vec_size), zeros(vec_size)))
             x = permutedims(x, reverse(range(1, ndims(x))))
-            for i=1:length(x)
-                res = model(x[i])
+            for i=1:size(x)[2]
+                res = model(x[:, i])
             end
             return res
         end
@@ -189,7 +189,7 @@ ops[:LSTM] = function(a)
                 res = model(x[i])
                 ans = hcat(ans, res)
             end
-            return permutedims(ans, (2,1))
+            return ans[:, end]
         end
     end
     return f

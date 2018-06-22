@@ -9,7 +9,7 @@ import time
 prices_dataset = pd.read_csv("prices.csv")
 yahoo = prices_dataset[prices_dataset["symbol"] == "YHOO"]
 yahoo_prices = yahoo.close.values.astype('float32')
-yahoo_stock_prices = yahoo_prices.reshape(1762, 1) / max(yahoo_prices)
+yahoo_stock_prices = yahoo_prices.reshape(1762, 1)
 
 
 train_size = int(len(yahoo_stock_prices) * 0.80)
@@ -24,7 +24,7 @@ def create_dataset(dataset, look_back=1):
         a = dataset[i:(i + look_back), 0]
         dataX.append(a)
         dataY.append(dataset[i + look_back, 0])
-    return np.array(dataX), np.array(dataY)
+    return np.array(dataX)/max(dataset), np.array(dataY)
 
 look_back = 20
 trainX, trainY = create_dataset(train, look_back)
