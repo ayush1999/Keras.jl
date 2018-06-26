@@ -9,6 +9,7 @@ data = pd.read_csv("bitcoin.csv")
 train = data[:10000] / 1000000
 test = data[350000:] / 1000000
 
+print("Preparing input data")
 ip = []
 for i in range(5000):
     temp = []
@@ -30,11 +31,12 @@ for i in range(5000):
 model = Sequential()
 model.add(LSTM(100, input_shape=(15, 4), recurrent_activation="sigmoid"))
 model.add(Dropout(0.2))
-model.add(Dense(80))
-model.add(Dense(40))
-model.add(Dense(25))
+model.add(Dense(75))
+model.add(Dense(50))
+model.add(Dense(20))
 model.add(Dense(1))
 
+print("Compiling model")
 model.compile(optimizer="adam", loss="mse")
 model.fit(ip, op, epochs=250)
 

@@ -94,6 +94,10 @@ function layer_type(a)
         return :Embedding
     elseif (a["class_name"] == "LSTM")
         return :LSTM
+    elseif (a["class_name"] == "MaxPooling1D")
+        return :MaxPooling1D
+    elseif (a["class_name"] == "AveragePooling1D")
+        return :AveragePooling1D
     end
 end
 
@@ -137,6 +141,10 @@ function fields(a)
         return ["name", "activation", "units", "return_sequences"]   
     elseif layer_type(a) == :Activation
         return ["name", "activation"]   
+    elseif layer_type(a) == :MaxPooling1D
+        return ["name","strides", "pool_size", "padding"]
+    elseif layer_type(a) == :AveragePooling1D
+        return ["name","strides", "pool_size", "padding"]
     end
 end
 

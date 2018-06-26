@@ -52,6 +52,15 @@ ops[:MaxPool] = function(a)
     #return vcall(x->maxpool(x, (a.fields["pool_size"]...), pads=(0,0), strides=(a.fields["strides"]...)))
 end
 
+ops[:MaxPooling1D] = function(a)
+    if a.fields["padding"] == "valid"
+        pad = (0,0)
+    end
+    pool_size = a.fields["pool_size"][1]
+    stride = a.fields["strides"][1]
+    return x->maxpool(x, (pool_size, 1), pad=pad, stride=(stride, stride))
+end
+
 ops[:Flatten] = function(a)
     f = (x,) -> begin
         l = prod(size(x))
@@ -89,6 +98,15 @@ end
 ops[:ZeroPadding2D] = function(a)
     pads = (a.fields["padding"][1]...)
     return x -> meanpool(x, (1,1), pad=pads, stride=(1,1))
+end
+
+ops[:AveragePooling1D] = function(a)
+    if a.fields["padding"] == "valid"
+        pads = (0,0)
+    end
+    pool_size = a.fields["pool_size"][1]
+    stride = a.fields["strides"][1]
+    return x -> meanpool(x, (pool_size, 1), pad=pads, stride=(stride, stride))
 end
 
 ops[:AveragePooling2D] = function(a)
