@@ -42,8 +42,7 @@ weight["conv2d_1"] = Dict{Any, Any}()
 weight["conv2d_1"]["conv2d_1"] = Dict{Any, Any}()
 weight["conv2d_1"]["conv2d_1"]["kernel:0"] = w
 weight["conv2d_1"]["conv2d_1"]["bias:0"] = b
-println(size(Conv(relu, w, b, (3,3), (0,0))(a)))
-@test Conv(relu, w, b, (3,3), (0,0))(a) == 
+@test Conv(relu, w, b, (3,3), (0,0), (1,1))(a) == 
             vcall(Keras.ops[:Conv](temp), a) |> syntax |> eval
 
 # Flatten test

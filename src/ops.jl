@@ -30,7 +30,32 @@ ops[:Conv] = function(a)
     elseif a.fields["padding"] == "same"
         pads = (Int64.((a.fields["kernel_size"] .-1)./2)...)
     end
-    return vcall(:Conv, Symbol(activation), kernel_weight, kernel_bias, strides, pads)
+    return vcall(:Conv, Symbol(activation), kernel_weight, kernel_bias, strides, pads, (1,1))
+end
+
+ops[:Conv1D] = function(a)
+    activation = a.fields["activation"]
+    if activation == "linear"
+        activation = "relu"
+    end
+    if !haskey(weight[a.fields["name"]] ,a.fields["name"])
+        dummy_name = a.fields["name"]*"_1"
+        weight[a.fields["name"]][a.fields["name"]] = weight[a.fields["name"]][dummy_name]
+    end
+    kernel_weight = reshape(weight[a.fields["name"]][a.fields["name"]]["kernel:0"], (8,28,2,1))
+    kernel_weight = permutedims(kernel_weight, (2,3,4,1))
+    if !haskey(weight[a.fields["name"]][a.fields["name"]], "bias:0")
+        weight[a.fields["name"]][a.fields["name"]]["bias:0"] = [0]
+    end
+    kernel_bias = weight[a.fields["name"]][a.fields["name"]]["bias:0"]
+    strides = (a.fields["strides"]...)[1]
+    if a.fields["padding"] == "valid"
+        pads = (0,0)
+    elseif a.fields["padding"] == "same"
+        pads = (Int64.((a.fields["kernel_size"] .-1)./2)...)
+    end
+    dilation = a.fields["dilation_rate"][1]
+    return vcall(:Conv, Symbol(activation), kernel_weight, kernel_bias, (strides, strides), pads, (dilation, dilation))
 end
 
 ops[:Activation] = function(a)

@@ -98,6 +98,8 @@ function layer_type(a)
         return :MaxPooling1D
     elseif (a["class_name"] == "AveragePooling1D")
         return :AveragePooling1D
+    elseif (a["class_name"] == "Conv1D")
+        return :Conv1D
     end
 end
 
@@ -145,6 +147,8 @@ function fields(a)
         return ["name","strides", "pool_size", "padding"]
     elseif layer_type(a) == :AveragePooling1D
         return ["name","strides", "pool_size", "padding"]
+    elseif layer_type(a) == :Conv1D
+        return ["name", "activation", "strides", "dilation_rate", "kernel_size", "filters", "padding"]
     end
 end
 
