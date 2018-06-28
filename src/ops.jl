@@ -104,7 +104,6 @@ ops[:MaxPooling1D] = function(a)
     for i=2:size(x)[3]
         res = hcat(res, temp[i])
     end
-    print(size(res))
     return reshape(res, (size(x)[1],Int(size(x)[2]/2),size(x)[3]))
     end
     return f
@@ -156,11 +155,25 @@ end
 
 ops[:AveragePooling1D] = function(a)
     if a.fields["padding"] == "valid"
-        pads = (0,0)
+        pad = (0,0)
     end
     pool_size = a.fields["pool_size"][1]
     stride = a.fields["strides"][1]
-    return x -> meanpool(x, (pool_size, 1), pad=pads, stride=(stride, stride))
+     
+    f = (x,) -> begin
+    fin_size_middle = size(x)[2] / 2
+    fin_size = (size(x)[1], fin_size_middle, size(x)[3])
+    temp = []
+    for i=1:size(x)[3]
+        push!(temp, meanpool(reshape(x[1,:,i], (size(x)[2],1,1,1)), (pool_size,1), pad=pad, stride=(stride,1)))
+    end
+    res = temp[1]
+    for i=2:size(x)[3]
+        res = hcat(res, temp[i])
+    end
+    return reshape(res, (size(x)[1],Int(size(x)[2]/2),size(x)[3]))
+    end
+    return f
 end
 
 ops[:AveragePooling2D] = function(a)
