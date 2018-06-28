@@ -9,17 +9,18 @@ ops[:Input] = function(a)
     return vcall(:.+, a, 0)
 end
 
+#data_format = "channels_last"
 ops[:Conv] = function(a)
     activation = a.fields["activation"]
     if activation =="linear"
-        activation = "relu"
+        activation = identity
     end
     if !haskey(weight[a.fields["name"]] ,a.fields["name"])
         dummy_name = a.fields["name"]*"_1"
         weight[a.fields["name"]][a.fields["name"]] = weight[a.fields["name"]][dummy_name]
     end
-    kernel_weight = reshape(weight[a.fields["name"]][a.fields["name"]]["kernel:0"],
-                             reverse(size(weight[a.fields["name"]][a.fields["name"]]["kernel:0"])))
+    w = weight[a.fields["name"]][a.fields["name"]]["kernel:0"]
+    kernel_weight = permutedims(w, (4,3,2,1))
     if !haskey(weight[a.fields["name"]][a.fields["name"]], "bias:0")
         weight[a.fields["name"]][a.fields["name"]]["bias:0"] = [0]
     end
@@ -30,7 +31,12 @@ ops[:Conv] = function(a)
     elseif a.fields["padding"] == "same"
         pads = (Int64.((a.fields["kernel_size"] .-1)./2)...)
     end
-    return vcall(:Conv, Symbol(activation), kernel_weight, kernel_bias, strides, pads, (1,1))
+    f = (x,) -> begin
+        x = permutedims(x, (3,2,4,1))
+        temp = Conv(activation, kernel_weight, kernel_bias, strides, pads, (1,1))(x)
+        return temp 
+    end
+    return f
 end
 
 ops[:Conv1D] = function(a)
@@ -42,7 +48,7 @@ ops[:Conv1D] = function(a)
         dummy_name = a.fields["name"]*"_1"
         weight[a.fields["name"]][a.fields["name"]] = weight[a.fields["name"]][dummy_name]
     end
-    kernel_weight = reshape(weight[a.fields["name"]][a.fields["name"]]["kernel:0"], (8,28,2,1))
+    kernel_weight = reshape(weight[a.fields["name"]][a.fields["name"]]["kernel:0"], (8,5,2,1))
     kernel_weight = permutedims(kernel_weight, (2,3,4,1))
     if !haskey(weight[a.fields["name"]][a.fields["name"]], "bias:0")
         weight[a.fields["name"]][a.fields["name"]]["bias:0"] = [0]
@@ -73,8 +79,11 @@ ops[:Dropout] = function(a)
 end
 
 ops[:MaxPool] = function(a)
-    return x->maxpool(x, (a.fields["pool_size"]...), pad=(0,0), stride=(a.fields["strides"]...))
-    #return vcall(x->maxpool(x, (a.fields["pool_size"]...), pads=(0,0), strides=(a.fields["strides"]...)))
+    f = (x,) -> begin
+    x = permutedims(x, (3,2,4,1))
+    return maxpool(x, (a.fields["pool_size"]...), pad=(0,0), stride=(a.fields["strides"]...))
+end
+    return f 
 end
 
 ops[:MaxPooling1D] = function(a)
@@ -83,14 +92,34 @@ ops[:MaxPooling1D] = function(a)
     end
     pool_size = a.fields["pool_size"][1]
     stride = a.fields["strides"][1]
-    return x->maxpool(x, (pool_size, 1), pad=pad, stride=(stride, stride))
+     
+    f = (x,) -> begin
+    fin_size_middle = size(x)[2] / 2
+    fin_size = (size(x)[1], fin_size_middle, size(x)[3])
+    temp = []
+    for i=1:size(x)[3]
+        push!(temp, maxpool(reshape(x[1,:,i], (size(x)[2],1,1,1)), (pool_size,1), pad=pad, stride=(stride,1)))
+    end
+    res = temp[1]
+    for i=2:size(x)[3]
+        res = hcat(res, temp[i])
+    end
+    print(size(res))
+    return reshape(res, (size(x)[1],Int(size(x)[2]/2),size(x)[3]))
+    end
+    return f
 end
 
 ops[:Flatten] = function(a)
+    
     f = (x,) -> begin
-        l = prod(size(x))
+    l = prod(size(x))
+    if ndims(x) == 4
+        return reshape(x, (l,1))
+    else
         x = permutedims(x, reverse(range(1, ndims(x))))
         return reshape(x, (l,1))
+    end
     end
     return f
 end

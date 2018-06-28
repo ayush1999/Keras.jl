@@ -1,4 +1,4 @@
-function maxpool1d(ip,  kernel, strides=1, pads=0)
+function maxpool1d(ip, kernel, strides=1, pads=0)
     l = size(ip)[2]
     ip1 = ip[:, 1]
     temp = []
