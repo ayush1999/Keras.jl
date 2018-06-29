@@ -22,8 +22,10 @@ ops[:Conv] = function(a)
     w = weight[a.fields["name"]][a.fields["name"]]["kernel:0"]
     kernel_weight = permutedims(w, (3,4,2,1))
     #Flip the kernel
-    kernel_weight = kernel_weight[end:-1:1, end:-1:1, 1 ,1]
-    kernel_weight = reshape(kernel_weight, (2,2,1,1))
+    num_filters = size(kernel_weight)[4]
+    num_layers = size(kernel_weight)[3]
+    kernel_weight = kernel_weight[end:-1:1, end:-1:1,:,:]
+    #kernel_weight = reshape(kernel_weight, (2,2,1,1))
     if !haskey(weight[a.fields["name"]][a.fields["name"]], "bias:0")
         weight[a.fields["name"]][a.fields["name"]]["bias:0"] = [0]
     end
@@ -45,14 +47,18 @@ end
 ops[:Conv1D] = function(a)
     activation = a.fields["activation"]
     if activation == "linear"
-        activation = "relu"
+        activation = identity
     end
     if !haskey(weight[a.fields["name"]] ,a.fields["name"])
         dummy_name = a.fields["name"]*"_1"
         weight[a.fields["name"]][a.fields["name"]] = weight[a.fields["name"]][dummy_name]
     end
-    kernel_weight = reshape(weight[a.fields["name"]][a.fields["name"]]["kernel:0"], (8,5,2,1))
-    kernel_weight = permutedims(kernel_weight, (2,3,4,1))
+    kernel_weight = weight[a.fields["name"]][a.fields["name"]]["kernel:0"]
+    kernel_weight = permutedims(kernel_weight[1,:,:], (2,1))
+    kernel_weight = kernel_weight[end:-1:1, end:-1:1]
+    s =size(kernel_weight)
+    new_size =(s[1], s[2], 1, 1)
+    kernel_weight = reshape(kernel_weight, new_size)
     if !haskey(weight[a.fields["name"]][a.fields["name"]], "bias:0")
         weight[a.fields["name"]][a.fields["name"]]["bias:0"] = [0]
     end
@@ -64,7 +70,14 @@ ops[:Conv1D] = function(a)
         pads = (Int64.((a.fields["kernel_size"] .-1)./2)...)
     end
     dilation = a.fields["dilation_rate"][1]
-    return vcall(:Conv, Symbol(activation), kernel_weight, kernel_bias, (strides, strides), pads, (dilation, dilation))
+    f = (x,) -> begin
+        x = permutedims(x, (2,3,1))
+        s = size(x)
+        new_size = (s[1], s[2], s[3], 1)
+        x = reshape(x, new_size)
+        return Conv(activation, kernel_weight, kernel_bias, (strides, strides), pads, (dilation, dilation))(x)
+    end
+    return f
 end
 
 ops[:Activation] = function(a)
@@ -117,7 +130,7 @@ ops[:Flatten] = function(a)
     f = (x,) -> begin
     l = prod(size(x))
     if ndims(x) == 4
-        return reshape(x, (l,1))
+        return reshape(permutedims(x, (3,1,2,4)), (l,1))
     else
         x = permutedims(x, reverse(range(1, ndims(x))))
         return reshape(x, (l,1))

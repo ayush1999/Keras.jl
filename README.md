@@ -57,18 +57,21 @@ Functional models can be tricky as they may consist of a number of sub-graphs wi
 ```
 Where `ip` is the input to our model. This directly returns the output. (Note: Currently there is no other way of running functional API models).
 
+
+## Insight
+The process of loading and running a Keras model in Flux mainly consists of two parts:
+
+1. Converting all Keras operators to Flux ops.
+2. Generating the computation graph from the Flux operators obtained. 
+
+In order to get correct results, make sure that the value of `mode` parameter is set to 0 ([here](https://github.com/FluxML/NNlib.jl/blob/master/src/impl/conv.jl#L259)). It's default value is 0, so if you haven't 
+played around with NNlib.jl, you're good to go!
+
 ## Issues
 
-Since this is currently under development, feel free to open any issue you encounter.
+Since this is currently under development, feel free to open any issue you encounter. You can post your queries on Julia 
+Slack, generally on the #machine-learning channel.
 
 ### Current Impediments:
 
 [Lambda](https://keras.io/layers/core/#lambda) layers cannot be handled at this moment. This is because we'd need to handle the Python AST, for parsing it as JSON.
-
-### To Do:
-
-Check if yaml support is needed. (No official Yaml parser present for Julia).
-
-Verify operators. (Add more tests for new ops)
-
-Investigate approaches for `Add` layer.
