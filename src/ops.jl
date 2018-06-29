@@ -20,7 +20,10 @@ ops[:Conv] = function(a)
         weight[a.fields["name"]][a.fields["name"]] = weight[a.fields["name"]][dummy_name]
     end
     w = weight[a.fields["name"]][a.fields["name"]]["kernel:0"]
-    kernel_weight = permutedims(w, (4,3,2,1))
+    kernel_weight = permutedims(w, (3,4,2,1))
+    #Flip the kernel
+    kernel_weight = kernel_weight[end:-1:1, end:-1:1, 1 ,1]
+    kernel_weight = reshape(kernel_weight, (2,2,1,1))
     if !haskey(weight[a.fields["name"]][a.fields["name"]], "bias:0")
         weight[a.fields["name"]][a.fields["name"]]["bias:0"] = [0]
     end
