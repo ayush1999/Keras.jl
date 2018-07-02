@@ -48,6 +48,8 @@ ops[:Conv1D] = function(a)
     activation = a.fields["activation"]
     if activation == "linear"
         activation = identity
+    elseif activation == "relu"
+        activation = relu
     end
     if !haskey(weight[a.fields["name"]] ,a.fields["name"])
         dummy_name = a.fields["name"]*"_1"
@@ -71,11 +73,16 @@ ops[:Conv1D] = function(a)
     end
     dilation = a.fields["dilation_rate"][1]
     f = (x,) -> begin
+        if ndims(x) == 2
+            n_shape = (1, size(x)[1], size(x)[2])
+            x = reshape(x, n_shape)
+        end
         x = permutedims(x, (2,3,1))
         s = size(x)
         new_size = (s[1], s[2], s[3], 1)
         x = reshape(x, new_size)
-        return Conv(activation, kernel_weight, kernel_bias, (strides, strides), pads, (dilation, dilation))(x)
+        res = Conv(activation, kernel_weight, kernel_bias, (strides, strides), pads, (dilation, dilation))(x)
+        return permutedims(res[:,:,:,1], (2,1,3))
     end
     return f
 end
@@ -110,7 +117,12 @@ ops[:MaxPooling1D] = function(a)
     stride = a.fields["strides"][1]
      
     f = (x,) -> begin
-    fin_size_middle = size(x)[2] / 2
+    if (size(x)[2] - pool_size + stride)/ stride % 1 == 0
+        fin_size_middle = Int((size(x)[2] - pool_size + stride)/ stride)
+    else
+        t = size(x)[2] / pool_size
+        fin_size_middle = Int(t - (t%1))
+    end
     fin_size = (size(x)[1], fin_size_middle, size(x)[3])
     temp = []
     for i=1:size(x)[3]
@@ -120,7 +132,7 @@ ops[:MaxPooling1D] = function(a)
     for i=2:size(x)[3]
         res = hcat(res, temp[i])
     end
-    return reshape(res, (size(x)[1],Int(size(x)[2]/2),size(x)[3]))
+    return reshape(res, fin_size)
     end
     return f
 end
