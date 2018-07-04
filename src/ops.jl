@@ -56,10 +56,10 @@ ops[:Conv1D] = function(a)
         weight[a.fields["name"]][a.fields["name"]] = weight[a.fields["name"]][dummy_name]
     end
     kernel_weight = weight[a.fields["name"]][a.fields["name"]]["kernel:0"]
-    kernel_weight = permutedims(kernel_weight[1,:,:], (2,1))
-    kernel_weight = kernel_weight[end:-1:1, end:-1:1]
+    kernel_weight = permutedims(kernel_weight, (3,2,1))
+    kernel_weight = kernel_weight[end:-1:1, end:-1:1, :]
     s =size(kernel_weight)
-    new_size =(s[1], s[2], 1, 1)
+    new_size =(s[1], s[2], s[3], 1)
     kernel_weight = reshape(kernel_weight, new_size)
     if !haskey(weight[a.fields["name"]][a.fields["name"]], "bias:0")
         weight[a.fields["name"]][a.fields["name"]]["bias:0"] = [0]
@@ -76,11 +76,16 @@ ops[:Conv1D] = function(a)
         if ndims(x) == 2
             n_shape = (1, size(x)[1], size(x)[2])
             x = reshape(x, n_shape)
+        elseif ndims(x) == 3
+            x = permutedims(x, (3,1,2))
         end
         x = permutedims(x, (2,3,1))
         s = size(x)
         new_size = (s[1], s[2], s[3], 1)
         x = reshape(x, new_size)
+        println(size(x))
+        kernel_weight = permutedims(kernel_weight, (1,2,4,3))
+        println(size(kernel_weight))
         res = Conv(activation, kernel_weight, kernel_bias, (strides, strides), pads, (dilation, dilation))(x)
         return permutedims(res[:,:,:,1], (2,1,3))
     end
@@ -132,7 +137,9 @@ ops[:MaxPooling1D] = function(a)
     for i=2:size(x)[3]
         res = hcat(res, temp[i])
     end
-    return reshape(res, fin_size)
+    res = reshape(res, fin_size)
+    println(size(res))
+    return permutedims(res, (2,3,1))
     end
     return f
 end
@@ -256,18 +263,16 @@ end
 ops[:Embedding] = function(a)
     name = a.fields["name"]
     embedding_matrix = weight[name][name]["embeddings:0"]
-    length_embedding = a.fields["output_dim"]
-    #embedding_zero = []
-    #for x=1:length_embedding
-    #    push!(embedding_zero, 0)
-    #end
+    output_dim = a.fields["output_dim"]
+    input_dim = a.fields["input_dim"]
     f = (x,) -> begin
+        if ndims(x) == 1 || ndims(x) == 2
         temp = embedding_matrix[:, Int64(x[1])+1]
         for i=2:length(x)
             temp = hcat(temp, embedding_matrix[:, Int64(x[i])+1])
         end
-        return reshape(temp, reverse(size(temp)))
-        #return temp
+            return permutedims(temp,reverse(range(1, ndims(temp))))
+        end
     end
     return f
 end
