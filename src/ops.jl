@@ -103,7 +103,10 @@ ops[:Concatenate] = function(a)
 end
 
 ops[:Dropout] = function(a)
-    return vcall(:Dropout, a.fields["rate"])
+    f = (x,) -> begin
+        return x
+    end
+    return f
 end
 
 ops[:MaxPool] = function(a)
