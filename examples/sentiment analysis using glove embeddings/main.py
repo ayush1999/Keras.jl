@@ -82,7 +82,7 @@ model.add(Dense(1, activation='sigmoid'))
 Adam_opt = Adam(lr=0.0001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
 model.compile(optimizer=Adam_opt, loss='binary_crossentropy', metrics=['acc'])
 
-model.fit(df_train_padded, df_train_y, epochs=40, verbose=1)
+model.fit(df_train_padded, df_train_y, epochs=45, verbose=1)
 
 # save the data
 
