@@ -66,41 +66,44 @@ function layer_type(a)
         return :Conv
     elseif (a["class_name"] == "MaxPooling2D" || a["class_name"] == "MaxPooling3D")
         return :MaxPool
-    elseif (a["class_name"] == "Dropout")
-        return :Dropout
-    elseif (a["class_name"] == "Flatten")
-        return :Flatten
-    elseif (a["class_name"] == "Dense")
-        return :Dense
-    elseif (a["class_name"] == "Activation")
-        return :Activation
-    elseif (a["class_name"] == "Reshape")
-        return :Reshape
-    elseif (a["class_name"] == "BatchNormalization")
-        return :BatchNormalization
-    elseif (a["class_name"] == "InputLayer")
-        return :InputLayer
-    elseif (a["class_name"] == "ZeroPadding2D")
-        return :ZeroPadding2D
-    elseif (a["class_name"] == "Add")
-        return :Add
-    elseif (a["class_name"] == "AveragePooling2D")
-        return :AveragePooling2D
-    elseif (a["class_name"] == "Concatenate")
-        return :Concatenate
-    elseif (a["class_name"] == "GlobalAveragePooling2D")
-        return :GlobalAveragePooling2D
-    elseif (a["class_name"] == "Embedding")
-        return :Embedding
-    elseif (a["class_name"] == "LSTM")
-        return :LSTM
-    elseif (a["class_name"] == "MaxPooling1D")
-        return :MaxPooling1D
-    elseif (a["class_name"] == "AveragePooling1D")
-        return :AveragePooling1D
-    elseif (a["class_name"] == "Conv1D")
-        return :Conv1D
+    else
+        return Symbol(a["class_name"])
     end
+    #    if (a["class_name"] == "Dropout")
+    #    return :Dropout
+    #elseif (a["class_name"] == "Flatten")
+    #    return :Flatten
+    #elseif (a["class_name"] == "Dense")
+    #    return :Dense
+    #elseif (a["class_name"] == "Activation")
+    #    return :Activation
+    #elseif (a["class_name"] == "Reshape")
+    #    return :Reshape
+    #elseif (a["class_name"] == "BatchNormalization")
+    #    return :BatchNormalization
+    #elseif (a["class_name"] == "InputLayer")
+    #    return :InputLayer
+    #elseif (a["class_name"] == "ZeroPadding2D")
+    #    return :ZeroPadding2D
+    #elseif (a["class_name"] == "Add")
+    #    return :Add
+    #elseif (a["class_name"] == "AveragePooling2D")
+    #    return :AveragePooling2D
+    #elseif (a["class_name"] == "Concatenate")
+    #    return :Concatenate
+    #elseif (a["class_name"] == "GlobalAveragePooling2D")
+    #    return :GlobalAveragePooling2D
+    #elseif (a["class_name"] == "Embedding")
+    #    return :Embedding
+    #elseif (a["class_name"] == "LSTM")
+    #    return :LSTM
+    #elseif (a["class_name"] == "MaxPooling1D")
+    #    return :MaxPooling1D
+    #elseif (a["class_name"] == "AveragePooling1D")
+    #    return :AveragePooling1D
+    #elseif (a["class_name"] == "Conv1D")
+    #    return :Conv1D
+    #end
 end
 
 """
