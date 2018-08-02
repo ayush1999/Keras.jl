@@ -57,6 +57,14 @@ Functional models can be tricky as they may consist of a number of sub-graphs wi
 ```
 Where `ip` is the input to our model. This directly returns the output. (Note: Currently there is no other way of running functional API models).
 
+## Intermediate outputs
+Keras.jl also allows you to get the intermediate outputs of a model. Suppose your model contains `m` layers, and you need the output
+after `n` layers (`m > n`).
+
+```
+>>> model[1:n](ip)
+```
+Should give you the output after exactly `n` layers.
 
 ## Insight
 The process of loading and running a Keras model in Flux mainly consists of two parts:
