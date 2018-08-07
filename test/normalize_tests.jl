@@ -12,4 +12,6 @@ d = Dict{Any, Any}()
 d["momentum"] = 0.9
 d["epsilon"] = 0.1
 a = Keras.new_type(:BatchNormalization, d)
-@test Keras.ops[:BatchNormalization](a)(ip) == BatchNorm(3, ϵ=0.1, momentum=0.9)(ip)
+@testset "Normalize" begin
+    @test Keras.ops[:BatchNormalization](a)(ip) == BatchNorm(3, ϵ=0.1, momentum=0.9)(ip)
+end
